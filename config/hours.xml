@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<params>
+    <hour>
+        <alias>09:00</alias>
+        <digits>10:00</digits>
+        <interface_name>script_aaa</interface_name>
+    </hour>
+    <hour>
+        <alias>11:00</alias>
+        <digits>11:00</digits>
+        <interface_name>script_aaa</interface_name>
+        <interface_name>script_bbb</interface_name>
+    </hour>
+    <hour>
+        <alias>12:00</alias>
+        <digits>12:00</digits>
+        <interface_name>script_aaa</interface_name>
+        <interface_name>script_bbb</interface_name>
+    </hour>
+</params>
