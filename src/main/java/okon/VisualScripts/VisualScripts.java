@@ -9,35 +9,36 @@ import java.util.Timer;
 
 public class VisualScripts extends Observable {
     private static final Logger logger = LogManager.getLogger(VisualScripts.class);
+    private final boolean[] scripts = new boolean[VisualScriptsWindow.scripts.size()];
+    private final boolean[] schedulers = new boolean[VisualScriptsWindow.hours.size()];
+    private final boolean[] options = new boolean[2];
     private int tab = 0;
-    private boolean[] scripts = new boolean[VisualScriptsWindow.scripts.size()];
     private int hour = -1;
-    private boolean[] schedulers = new boolean[VisualScriptsWindow.hours.size()];
-    private boolean even = false;
-    private boolean odd = false;
 
     void setTab(int index) { tab = index; }
 
-    void setScript(int index, boolean newState) { scripts[index] = newState; }
-
     boolean getScript(int index) { return scripts[index]; }
+
+    void setScript(int index, boolean newState) { scripts[index] = newState; }
 
     void setHour(int index) { this.hour = index; }
 
-    void setScheduler(int index, boolean newState) { schedulers[index] = newState; }
-
     boolean getScheduler(int index) { return schedulers[index]; }
 
+    void setScheduler(int index, boolean newState) { schedulers[index] = newState; }
+
+    boolean getOption(int index) { return options[index]; };
+
     void setEven(boolean newState) {
-        even = newState;
-        if (even == true) {
+        options[0] = newState;
+        if (options[0] == true) {
             checkEven();
         }
     }
 
     void setOdd(boolean newState) {
-        odd = newState;
-        if (odd == true) {
+        options[1] = newState;
+        if (options[1] == true) {
             checkOdd();
         }
     }
@@ -62,6 +63,12 @@ public class VisualScripts extends Observable {
         notifyObservers(new int[]{2, index});
     }
 
+    void cleanOption(int index, boolean newState) {
+        options[index] = newState;
+        setChanged();
+        notifyObservers(new int[]{3, index});
+    }
+
     void activateCleanButton() {
         switch (tab) {
             case 0:
@@ -79,7 +86,12 @@ public class VisualScripts extends Observable {
                     if (schedulers[i] == true) {
                         cleanScheduler(i, false);
                     }
-                };
+                }
+                for (int j = 0; j < options.length; j++) {
+                    if (options[j] == true) {
+                        cleanOption(j, false);
+                    }
+                }
                 break;
         }
     }

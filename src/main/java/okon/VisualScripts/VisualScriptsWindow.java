@@ -215,6 +215,11 @@ public class VisualScriptsWindow extends Application implements Observer {
             if (node instanceof CheckBox) {
                 ((CheckBox)node).setSelected(subject.getScheduler(((int[])arg)[1]));
             }
+        } else if (isOptionOnThirdTabChanged(arg)) {
+            Node node = getOptionsFromThirdTabContent().get(((int[])arg)[1]);
+            if (node instanceof CheckBox) {
+                ((CheckBox)node).setSelected(subject.getOption(((int[])arg)[1]));
+            }
         }
     }
 
@@ -230,6 +235,10 @@ public class VisualScriptsWindow extends Application implements Observer {
         return (arg instanceof int[] && ((int[])arg)[0] == 2);
     }
 
+    private boolean isOptionOnThirdTabChanged(Object arg) {
+        return (arg instanceof int[] && ((int[])arg)[0] == 3);
+    }
+
     private List<Node> getScriptsFromFirstTabContent() {
         return ((FlowPane)tabPanel.getTabs().get(0).getContent()).getChildren();
     }
@@ -240,5 +249,9 @@ public class VisualScriptsWindow extends Application implements Observer {
 
     private List<Node> getSchedulersFromThirdTabContent() {
         return ((FlowPane)((BorderPane)tabPanel.getTabs().get(2).getContent()).getCenter()).getChildren();
+    }
+
+    private List<Node> getOptionsFromThirdTabContent() {
+        return ((FlowPane)((BorderPane)tabPanel.getTabs().get(2).getContent()).getBottom()).getChildren();
     }
 }
