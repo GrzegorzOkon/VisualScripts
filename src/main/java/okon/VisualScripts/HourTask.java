@@ -26,11 +26,7 @@ public class HourTask extends TimerTask {
             String interfaceName = getInterfaceNames().get(i);
             for (int j = 0; j < VisualScriptsWindow.scripts.size(); j++) {
                 if (VisualScriptsWindow.scripts.get(j).getInterfaceName().equals(interfaceName)) {
-                    if (VisualScriptsWindow.scripts.get(j).getEngine().toLowerCase().equals("java")) {
-                        new JarRunner().run(VisualScriptsWindow.scripts.get(j));
-                    } else if (VisualScriptsWindow.scripts.get(i).getEngine().toLowerCase().equals("perl")) {
-                        new PlRunner().run(VisualScriptsWindow.scripts.get(j));
-                    }
+                    new ScriptRunner().run(VisualScriptsWindow.scripts.get(j));
                 }
             }
         }

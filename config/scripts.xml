@@ -5,13 +5,13 @@
         <alias>alias1</alias>
         <filename>script1</filename>
         <path>.\scripts\catalog1</path>
-        <engine>java</engine>
+        <command>java -jar script1.jar</command>
     </script>
     <script>
         <interface_name>script_bbb</interface_name>
         <alias>alias2</alias>
         <filename>acript2</filename>
         <path>.\scripts\catalog2</path>
-        <engine>perl</engine>
+        <command>perl script2.pl</command>
     </script>
 </params>

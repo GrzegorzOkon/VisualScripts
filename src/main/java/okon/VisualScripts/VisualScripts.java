@@ -101,11 +101,7 @@ public class VisualScripts extends Observable {
             case 0:
                 for (int i = 0; i < scripts.length; i++) {
                     if (scripts[i] == true) {
-                        if (VisualScriptsWindow.scripts.get(i).getEngine().toLowerCase().equals("java")) {
-                            new JarRunner().run(VisualScriptsWindow.scripts.get(i));
-                        } else if (VisualScriptsWindow.scripts.get(i).getEngine().toLowerCase().equals("perl")) {
-                            new PlRunner().run(VisualScriptsWindow.scripts.get(i));
-                        }
+                        new ScriptRunner().run(VisualScriptsWindow.scripts.get(i));
                     }
                 };
                 break;

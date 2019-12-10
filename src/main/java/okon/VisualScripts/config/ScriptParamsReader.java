@@ -13,6 +13,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ScriptParamsReader {
@@ -31,13 +32,17 @@ public class ScriptParamsReader {
                     String alias = element.getElementsByTagName("alias").item(0).getTextContent();
                     String filename = element.getElementsByTagName("filename").item(0).getTextContent();
                     String path = element.getElementsByTagName("path").item(0).getTextContent();
-                    String engine = element.getElementsByTagName("engine").item(0).getTextContent();
-                    result.add(new Script(interfaceName, alias, filename, path, engine));
+                    String command = element.getElementsByTagName("command").item(0).getTextContent();
+                    result.add(new Script(interfaceName, alias, filename, path, getAsList(command)));
                 }
             }
         }
         logger.info("ReadScriptParams(" + file.getName() + ") : OK");
         return result;
+    }
+
+    private static List<String> getAsList(String command) {
+        return new ArrayList(Arrays.asList(command.trim().split("\\s+")));
     }
 
     private static Element parseXml(File file) {

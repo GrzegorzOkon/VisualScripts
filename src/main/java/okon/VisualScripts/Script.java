@@ -1,18 +1,20 @@
 package okon.VisualScripts;
 
+import java.util.List;
+
 public class Script {
     private final String interfaceName;
     private final String alias;
     private final String name;
     private final String path;
-    private final String engine;
+    private final List<String> command;
 
-    public Script(String interfaceName, String alias, String name, String path, String engine) {
+    public Script(String interfaceName, String alias, String name, String path, List<String> command) {
         this.interfaceName = interfaceName;
         this.alias = alias;
         this.name = name;
         this.path = path;
-        this.engine = engine;
+        this.command = command;
     }
 
     public String getInterfaceName() { return interfaceName; }
@@ -29,7 +31,5 @@ public class Script {
         return path;
     }
 
-    public String getEngine() {
-        return engine;
-    }
+    public List<String> getCommand() { return command; }
 }
