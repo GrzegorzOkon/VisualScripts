@@ -15,9 +15,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import java.io.File;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.*;
 
 public class VisualScriptsWindow extends Application implements Observer {
     private static final Logger logger = LogManager.getLogger(VisualScriptsWindow.class);
@@ -26,6 +24,7 @@ public class VisualScriptsWindow extends Application implements Observer {
     static final String version;
     final static List<Script> scripts;
     final static List<Hour> hours;
+    final static Queue<Script> scriptQueue = new LinkedList<>();
 
     static {
         LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);
