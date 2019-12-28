@@ -2,6 +2,8 @@ package okon.VisualScripts;
 
 import java.util.List;
 import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static okon.VisualScripts.VisualScriptsWindow.scriptQueue;
 
@@ -40,7 +42,7 @@ public class HourTask extends TimerTask {
     }
 
     private void startThreadPool(int threadSum) {
-        Thread[] threads = new Thread[threadSum];
+        /*Thread[] threads = new Thread[threadSum];
         for (int i = 0; i < threadSum; i++) {
             threads[i] = new Thread(new ScriptConsumerThread());
         }
@@ -51,6 +53,16 @@ public class HourTask extends TimerTask {
             } catch (Exception e) {
                 throw new AppException(e);
             }
+        }*/
+
+        ExecutorService service = null;
+        try {
+            service = Executors.newFixedThreadPool(3);
+            for (int i = 0; i < threadSum; i++) {
+                service.execute(new ScriptConsumerThread());
+            }
+        } finally {
+            if(service != null) service.shutdown();
         }
     }
 }
