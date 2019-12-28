@@ -6,38 +6,26 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import static okon.VisualScripts.VisualScriptsWindow.scriptQueue;
+public class ScriptTask implements Callable<Boolean> {
+    private static final Logger logger = LogManager.getLogger(ScriptTask.class);
+    private final Script script;
 
-public class ScriptConsumerThread implements Runnable {
-    private static final Logger logger = LogManager.getLogger(ScriptConsumerThread.class);
-
-    public void run(Script script) {
-        execute(script);
+    public ScriptTask(Script script) {
+        this.script = script;
     }
 
     @Override
-    public void run() {
-        while (!scriptQueue.isEmpty()) {
-            Script script = null;
-            synchronized (scriptQueue) {
-                if (!scriptQueue.isEmpty()) {
-                    script = scriptQueue.poll();
-                }
-            }
-            if (script != null) {
-                execute(script);
-            }
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                logger.error(script.getName() + " - " + e.getMessage());
-            }
+    public Boolean call() {
+        if (script != null) {
+            execute();
         }
+        return true;
     }
 
-    private void execute(Script script) {
+    public void execute() {
         ProcessBuilder processBuilder = new ProcessBuilder();
         StopWatch executionWatch = new StopWatch();
         processBuilder.command(script.getCommand());
@@ -46,11 +34,12 @@ public class ScriptConsumerThread implements Runnable {
         try {
             Process process = processBuilder.start();
             logger.info(script.getName() + " is starting...");
-            int exitCode = process.waitFor();
-            if (exitCode == 0) {
+            process.waitFor(5, TimeUnit.MINUTES);
+            if (!process.isAlive()) {
                 logger.info(script.getName() + " is finished (exec time: " + executionWatch.getTime(TimeUnit.SECONDS) + " sec.)");
             } else {
-                logger.error(script.getName() + " is finished with error (exec time: " + executionWatch.getTime(TimeUnit.SECONDS) + " sec.)");
+                process.destroyForcibly();
+                logger.error(script.getName() + " is destroyed (exec time: " + executionWatch.getTime(TimeUnit.SECONDS) + " sec.)");
             }
         } catch (IOException e) {
             logger.error(script.getName() + " - " + e.getMessage());

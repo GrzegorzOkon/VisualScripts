@@ -24,7 +24,6 @@ public class VisualScriptsWindow extends Application implements Observer {
     static final String version;
     final static List<Script> scripts;
     final static List<Hour> hours;
-    final static Queue<Script> scriptQueue = new LinkedList<>();
 
     static {
         LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);

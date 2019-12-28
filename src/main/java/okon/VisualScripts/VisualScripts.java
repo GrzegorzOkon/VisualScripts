@@ -101,7 +101,7 @@ public class VisualScripts extends Observable {
             case 0:
                 for (int i = 0; i < scripts.length; i++) {
                     if (scripts[i] == true) {
-                        new ScriptConsumerThread().run(VisualScriptsWindow.scripts.get(i));
+                        new ScriptTask(VisualScriptsWindow.scripts.get(i)).execute();
                     }
                 };
                 break;

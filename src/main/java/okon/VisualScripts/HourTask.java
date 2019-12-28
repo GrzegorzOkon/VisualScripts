@@ -1,13 +1,19 @@
 package okon.VisualScripts;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import static okon.VisualScripts.VisualScriptsWindow.scriptQueue;
+import java.util.concurrent.Future;
 
 public class HourTask extends TimerTask {
+    private static final Logger logger = LogManager.getLogger(HourTask.class);
+    private final Queue<ScriptTask> tasks = new LinkedList<>();
     private final Hour hour;
 
     public HourTask(Hour hour) { this.hour = hour; }
@@ -27,7 +33,7 @@ public class HourTask extends TimerTask {
     @Override
     public void run() {
         addScriptsToPool();
-        startThreadPool(scriptQueue.size());
+        startThreadPool();
     }
 
     private void addScriptsToPool() {
@@ -35,34 +41,20 @@ public class HourTask extends TimerTask {
             String interfaceName = getInterfaceNames().get(i);
             for (int j = 0; j < VisualScriptsWindow.scripts.size(); j++) {
                 if (VisualScriptsWindow.scripts.get(j).getInterfaceName().equals(interfaceName)) {
-                    VisualScriptsWindow.scriptQueue.add(VisualScriptsWindow.scripts.get(j));
+                    tasks.add(new ScriptTask(VisualScriptsWindow.scripts.get(j)));
                 }
             }
         }
     }
 
-    private void startThreadPool(int threadSum) {
-        /*Thread[] threads = new Thread[threadSum];
-        for (int i = 0; i < threadSum; i++) {
-            threads[i] = new Thread(new ScriptConsumerThread());
-        }
-        for (int i = 0; i < threadSum; i++) {
-            threads[i].start();
-            try {
-                Thread.sleep(1000);
-            } catch (Exception e) {
-                throw new AppException(e);
-            }
-        }*/
-
+    private void startThreadPool() {
         ExecutorService service = null;
         try {
-            service = Executors.newFixedThreadPool(3);
-            for (int i = 0; i < threadSum; i++) {
-                service.execute(new ScriptConsumerThread());
-            }
+            List<Future<Boolean>> futures = Executors.newFixedThreadPool(3).invokeAll(tasks);
+        } catch (Exception e) {
+            logger.error("Exception in hour " + hour.getAlias()+ " - " + e.getMessage());
         } finally {
-            if(service != null) service.shutdown();
+            if (service != null) service.shutdown();
         }
     }
 }
