@@ -37,7 +37,7 @@ public class HourParamsReader {
                 }
             }
         }
-        logger.info("ReadHourParams(" + file.getName() + ") : OK");
+        logger.debug("ReadHourParams(" + file.getName() + ") : OK");
         return result;
     }
 
@@ -46,7 +46,7 @@ public class HourParamsReader {
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
             Document document = docBuilder.parse(file);
-            logger.info("ParseXml(" + file.getName() + ") : OK");
+            logger.debug("ParseXml(" + file.getName() + ") : OK");
             return document.getDocumentElement();
         } catch (Exception e) {
             logger.error("ParseXml(" + file.getName() + ") : " + e.getMessage());

@@ -1,18 +1,12 @@
 package okon.VisualScripts;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-import java.util.TimerTask;
+import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class HourTask extends TimerTask {
-    private static final Logger logger = LogManager.getLogger(HourTask.class);
     private final Queue<ScriptTask> tasks = new LinkedList<>();
     private final Hour hour;
 
@@ -33,7 +27,7 @@ public class HourTask extends TimerTask {
     @Override
     public void run() {
         addScriptsToPool();
-        startThreadPool();
+        startThreadPool(3);
     }
 
     private void addScriptsToPool() {
@@ -47,14 +41,16 @@ public class HourTask extends TimerTask {
         }
     }
 
-    private void startThreadPool() {
-        ExecutorService service = null;
-        try {
-            List<Future<Boolean>> futures = Executors.newFixedThreadPool(3).invokeAll(tasks);
-        } catch (Exception e) {
-            logger.error("Exception in hour " + hour.getAlias()+ " - " + e.getMessage());
-        } finally {
-            if (service != null) service.shutdown();
+    private void startThreadPool(int nThreads) {
+        ExecutorService executor = Executors.newFixedThreadPool(nThreads);
+        submitAll(executor, tasks);
+    }
+
+    private List<Future<Message>> submitAll(ExecutorService executor, Collection<? extends Callable> tasks) {
+        List<Future<Message>> result = new ArrayList<>(tasks.size());
+        for (Callable task : tasks) {
+            result.add(executor.submit(task));
         }
+        return result;
     }
 }

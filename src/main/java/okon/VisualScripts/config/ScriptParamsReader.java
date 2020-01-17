@@ -37,7 +37,7 @@ public class ScriptParamsReader {
                 }
             }
         }
-        logger.info("ReadScriptParams(" + file.getName() + ") : OK");
+        logger.debug("ReadScriptParams(" + file.getName() + ") : OK");
         return result;
     }
 
@@ -50,7 +50,7 @@ public class ScriptParamsReader {
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
             Document document = docBuilder.parse(file);
-            logger.info("ParseXml(" + file.getName() + ") : OK");
+            logger.debug("ParseXml(" + file.getName() + ") : OK");
             return document.getDocumentElement();
         } catch (Exception e) {
             logger.error("ParseXml(" + file.getName() + ") : " + e.getMessage());
