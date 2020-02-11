@@ -121,6 +121,7 @@ public class VisualScripts extends Observable {
                         logger.debug("Task '" + task.getAlias() + "' will start on '" + date.toString() + "'.");
                     }
                 };
+                addAppToTray();
                 break;
         }
     }
@@ -155,22 +156,27 @@ public class VisualScripts extends Observable {
         return result;
     }
 
-    private boolean isHourSelected () {
+    private boolean isHourSelected() {
         return hour != -1 ? true : false;
     }
 
-    private boolean isHourElapsed (HourTask task){
+    private boolean isHourElapsed(HourTask task){
         if (Integer.valueOf(task.getDigits().substring(0, task.getDigits().indexOf(":"))) < new Date().getHours()) {
             return true;
         }
         return false;
     }
 
-    private boolean isHourEven (Hour task){
+    private boolean isHourEven(Hour task){
         return Integer.valueOf(task.getDigits().substring(0, task.getDigits().indexOf(":"))) % 2 == 0 ? true : false;
     }
 
-    private boolean isHourOdd (Hour task){
+    private boolean isHourOdd(Hour task){
         return Integer.valueOf(task.getDigits().substring(0, task.getDigits().indexOf(":"))) % 2 == 1 ? true : false;
+    }
+
+    private void addAppToTray() {
+        setChanged();
+        notifyObservers(new int[]{4});
     }
 }

@@ -1,11 +1,13 @@
 package okon.VisualScripts;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -14,11 +16,17 @@ import okon.VisualScripts.config.ScriptParamsReader;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
+
+import javax.imageio.ImageIO;
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.*;
+import java.util.List;
 
 public class VisualScriptsWindow extends Application implements Observer {
     private static final Logger logger = LogManager.getLogger(VisualScriptsWindow.class);
+    private Stage stage;
     private VisualScripts subject;
     TabPane tabPanel = new TabPane();
     static final String version;
@@ -40,20 +48,16 @@ public class VisualScriptsWindow extends Application implements Observer {
 
     @Override
     public void start(Stage stage) {
+        this.stage = stage;
+        Platform.setImplicitExit(false);
         subject = new VisualScripts();
         subject.addObserver(this);
-
         stage.setScene(prepareScene(stage));
         stage.setTitle(version);
         stage.show();
     }
 
     private Scene prepareScene(Stage stage) {
-        tabPanel.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-        tabPanel.getSelectionModel().selectedIndexProperty().addListener( (observable, oldValue, newValue) -> {
-            subject.setTab(newValue.intValue());
-        });
-
         BorderPane panel = prepareWindow(stage);
         prepareTabs();
         return new Scene(panel, 600, 400);
@@ -61,6 +65,10 @@ public class VisualScriptsWindow extends Application implements Observer {
 
     private BorderPane prepareWindow(Stage stage) {
         BorderPane windowPanel = new BorderPane();
+        tabPanel.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+        tabPanel.getSelectionModel().selectedIndexProperty().addListener( (observable, oldValue, newValue) -> {
+            subject.setTab(newValue.intValue());
+        });
         windowPanel.setCenter(tabPanel);
 
         BorderPane buttonPanel = new BorderPane();
@@ -86,7 +94,8 @@ public class VisualScriptsWindow extends Application implements Observer {
         Button closeButton = new Button("Close");
         closeButton.setPrefSize(100, 20);
         closeButton.setOnAction((event) -> {
-            stage.close();
+            Platform.exit();
+            //stage.close();
         });
 
         buttonPanel.setLeft(buttonBox);
@@ -196,6 +205,64 @@ public class VisualScriptsWindow extends Application implements Observer {
         tab.setContent(panel);
     }
 
+    private void addAppToTray() {
+        try {
+            java.awt.Toolkit.getDefaultToolkit();
+
+            if (!java.awt.SystemTray.isSupported()) {
+                System.out.println("No system tray support, application exiting.");
+                Platform.exit();
+            }
+
+            java.awt.SystemTray tray = java.awt.SystemTray.getSystemTray();
+            URL imageLoc = new URL("file:image/horse.png");
+            java.awt.Image image = ImageIO.read(imageLoc);
+            java.awt.TrayIcon trayIcon = new java.awt.TrayIcon(image);
+            trayIcon.setToolTip("BlackHorse");
+            trayIcon.setImageAutoSize(true);
+
+            java.awt.Font defaultFont = java.awt.Font.decode(null);
+            java.awt.Font boldFont = defaultFont.deriveFont(java.awt.Font.BOLD);
+
+            java.awt.MenuItem openItem = new java.awt.MenuItem("Open");
+            openItem.addActionListener(event -> {
+                Platform.runLater(this::showStage);
+                tray.remove(trayIcon);
+            });
+            openItem.setFont(boldFont);
+
+            java.awt.MenuItem exitItem = new java.awt.MenuItem("Exit");
+            exitItem.addActionListener(event -> {
+                Platform.exit();
+                tray.remove(trayIcon);
+            });
+            exitItem.setFont(boldFont);
+
+            final java.awt.PopupMenu popup = new java.awt.PopupMenu();
+            popup.add(openItem);
+            popup.add(exitItem);
+            trayIcon.setPopupMenu(popup);
+
+            tray.add(trayIcon);
+        } catch (java.awt.AWTException | IOException e) {
+            System.out.println("Unable to init system tray");
+            e.printStackTrace();
+        }
+    }
+
+    private void showStage() {
+        if (stage != null) {
+            stage.show();
+            stage.toFront();
+        }
+    }
+
+    private void hideStage() {
+        if (stage != null) {
+            stage.hide();
+        }
+    }
+
     @Override
     public void update(Observable o, Object arg) {
         if (isScriptOnFirstTabChanged(arg)) {
@@ -218,6 +285,9 @@ public class VisualScriptsWindow extends Application implements Observer {
             if (node instanceof CheckBox) {
                 ((CheckBox)node).setSelected(subject.getOption(((int[])arg)[1]));
             }
+        } else if (isRequestForAddingToTray(arg)) {
+            javax.swing.SwingUtilities.invokeLater(this::addAppToTray);
+            hideStage();
         }
     }
 
@@ -233,9 +303,9 @@ public class VisualScriptsWindow extends Application implements Observer {
         return (arg instanceof int[] && ((int[])arg)[0] == 2);
     }
 
-    private boolean isOptionOnThirdTabChanged(Object arg) {
-        return (arg instanceof int[] && ((int[])arg)[0] == 3);
-    }
+    private boolean isOptionOnThirdTabChanged(Object arg) { return (arg instanceof int[] && ((int[])arg)[0] == 3); }
+
+    private boolean isRequestForAddingToTray(Object arg) { return (arg instanceof int[] && ((int[])arg)[0] == 4); }
 
     private List<Node> getScriptsFromFirstTabContent() {
         return ((FlowPane)tabPanel.getTabs().get(0).getContent()).getChildren();
