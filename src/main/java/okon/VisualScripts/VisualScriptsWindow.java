@@ -291,9 +291,7 @@ public class VisualScriptsWindow extends Application implements Observer {
         }
     }
 
-    private boolean isScriptOnFirstTabChanged(Object arg) {
-        return (arg instanceof int[] && ((int[])arg)[0] == 0);
-    }
+    private boolean isScriptOnFirstTabChanged(Object arg) { return (arg instanceof int[] && ((int[])arg)[0] == 0); }
 
     private boolean isHourOnSecondTabChanged(Object arg) {
         return (arg instanceof int[] && ((int[])arg)[0] == 1);
