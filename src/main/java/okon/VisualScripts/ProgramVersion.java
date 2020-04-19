@@ -15,4 +15,8 @@ public class ProgramVersion {
         logger.info("*** " + programName + " version " + major + "." + minor + "." + release + " ***");
         return programName + " version " + major + "." + minor + "." + release + " (rev. " + revision + ")";
     }
+
+    public static String getProgramName() {
+        return programName;
+    }
 }

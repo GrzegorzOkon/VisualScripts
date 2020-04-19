@@ -14,6 +14,7 @@ public class VisualScripts extends Observable {
     private final boolean[] options = new boolean[2];
     private int tab = 0;
     private int hour = -1;
+    private Timer timer = null;
 
     void setTab(int index) { tab = index; }
 
@@ -111,16 +112,8 @@ public class VisualScripts extends Observable {
                 };
                 break;
             case 2:
-                Timer timer = new Timer();
-                for (int i = 0; i < schedulers.length; i++) {
-                    if (schedulers[i] == true) {
-                        HourTask task = new HourTask(VisualScriptsWindow.hours.get(i));
-                        Date date = setScheduledTime(task);
-                        timer.schedule(task, date);
-                        logger.info("Task '" + task.getAlias() + "' is succesfully added to a scheduler.");
-                        logger.debug("Task '" + task.getAlias() + "' will start on '" + date.toString() + "'.");
-                    }
-                };
+                cancelOldTasks();
+                scheduleNewTasks();
                 addAppToTray();
                 break;
         }
@@ -144,6 +137,33 @@ public class VisualScripts extends Observable {
             setChanged();
             notifyObservers(new int[]{2, i});
         }
+    }
+
+    private void cancelOldTasks() {
+        if (isTimerActivated() == true) {
+            timer.cancel();
+            timer.purge();
+            logger.info("Actual scheduled tasks are cancelled.");
+        }
+    }
+
+    private void scheduleNewTasks() {
+        timer = new Timer(ProgramVersion.getProgramName() + "Timer");
+        for (int i = 0; i < schedulers.length; i++) {
+            if (schedulers[i] == true) {
+                HourTask task = new HourTask(VisualScriptsWindow.hours.get(i));
+                Date date = setScheduledTime(task);
+                timer.schedule(task, date);
+                logger.info("Task '" + task.getAlias() + "' is succesfully added to a scheduler.");
+                logger.debug("Task '" + task.getAlias() + "' will start on '" + date.toString() + "'.");
+            }
+        };
+    }
+
+    private boolean isTimerActivated() {
+        if (timer == null)
+            return false;
+        return true;
     }
 
     private Date setScheduledTime(HourTask task) {
