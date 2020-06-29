@@ -30,8 +30,8 @@ public class VisualScriptsWindow extends Application implements Observer {
     private VisualScripts subject;
     TabPane tabPanel = new TabPane();
     static final String version;
-    final static List<Script> scripts;
-    final static List<Hour> hours;
+    static final List<Script> scripts;
+    static final List<Hour> hours;
 
     static {
         LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);
@@ -65,6 +65,7 @@ public class VisualScriptsWindow extends Application implements Observer {
 
     private BorderPane prepareWindow(Stage stage) {
         BorderPane windowPanel = new BorderPane();
+
         tabPanel.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         tabPanel.getSelectionModel().selectedIndexProperty().addListener( (observable, oldValue, newValue) -> {
             subject.setTab(newValue.intValue());
@@ -94,8 +95,7 @@ public class VisualScriptsWindow extends Application implements Observer {
         Button closeButton = new Button("Close");
         closeButton.setPrefSize(100, 20);
         closeButton.setOnAction((event) -> {
-            Platform.exit();
-            //stage.close();
+            subject.activateCloseButton();
         });
 
         buttonPanel.setLeft(buttonBox);

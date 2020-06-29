@@ -114,9 +114,12 @@ public class VisualScripts extends Observable {
             case 2:
                 cancelOldTasks();
                 scheduleNewTasks();
-                addAppToTray();
                 break;
         }
+    }
+
+    void activateCloseButton() {
+        addAppToTray();
     }
 
     private void checkEven() {
