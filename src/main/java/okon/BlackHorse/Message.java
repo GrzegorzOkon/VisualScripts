@@ -1,4 +1,4 @@
-package okon.VisualScripts;
+package okon.BlackHorse;
 
 public class Message {
     private final String name;

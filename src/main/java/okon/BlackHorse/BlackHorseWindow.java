@@ -1,4 +1,4 @@
-package okon.VisualScripts;
+package okon.BlackHorse;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -11,8 +11,8 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import okon.VisualScripts.config.HourParamsReader;
-import okon.VisualScripts.config.ScriptParamsReader;
+import okon.BlackHorse.config.HourParamsReader;
+import okon.BlackHorse.config.ScriptParamsReader;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -24,10 +24,10 @@ import java.net.URL;
 import java.util.*;
 import java.util.List;
 
-public class VisualScriptsWindow extends Application implements Observer {
-    private static final Logger logger = LogManager.getLogger(VisualScriptsWindow.class);
+public class BlackHorseWindow extends Application implements Observer {
+    private static final Logger logger = LogManager.getLogger(BlackHorseWindow.class);
     private Stage stage;
-    private VisualScripts subject;
+    private BlackHorse subject;
     TabPane tabPanel = new TabPane();
     static final String version;
     static final List<Script> scripts;
@@ -50,7 +50,7 @@ public class VisualScriptsWindow extends Application implements Observer {
     public void start(Stage stage) {
         this.stage = stage;
         Platform.setImplicitExit(false);
-        subject = new VisualScripts();
+        subject = new BlackHorse();
         subject.addObserver(this);
         stage.setScene(prepareScene(stage));
         stage.setTitle(version);

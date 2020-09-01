@@ -1,4 +1,4 @@
-package okon.VisualScripts;
+package okon.BlackHorse;
 
 import java.util.List;
 

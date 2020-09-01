@@ -1,16 +1,14 @@
-package okon.VisualScripts;
+package okon.BlackHorse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Date;
-import java.util.Observable;
-import java.util.Timer;
+import java.util.*;
 
-public class VisualScripts extends Observable {
-    private static final Logger logger = LogManager.getLogger(VisualScripts.class);
-    private final boolean[] scripts = new boolean[VisualScriptsWindow.scripts.size()];
-    private final boolean[] schedulers = new boolean[VisualScriptsWindow.hours.size()];
+public class BlackHorse extends Observable {
+    private static final Logger logger = LogManager.getLogger(BlackHorse.class);
+    private final boolean[] scripts = new boolean[BlackHorseWindow.scripts.size()];
+    private final boolean[] schedulers = new boolean[BlackHorseWindow.hours.size()];
     private final boolean[] options = new boolean[2];
     private int tab = 0;
     private int hour = -1;
@@ -102,13 +100,13 @@ public class VisualScripts extends Observable {
             case 0:
                 for (int i = 0; i < scripts.length; i++) {
                     if (scripts[i] == true) {
-                        new ScriptTask(VisualScriptsWindow.scripts.get(i)).call();
+                        new ScriptTask(BlackHorseWindow.scripts.get(i)).call();
                     }
                 };
                 break;
             case 1:
                 if (isHourSelected()) {
-                    new HourTask(VisualScriptsWindow.hours.get(this.hour)).run();
+                    new HourTask(BlackHorseWindow.hours.get(this.hour)).run();
                 };
                 break;
             case 2:
@@ -124,7 +122,7 @@ public class VisualScripts extends Observable {
 
     private void checkEven() {
         for (int i = 0; i < schedulers.length; i++) {
-            if (schedulers[i] == false && isHourEven(VisualScriptsWindow.hours.get(i))) {
+            if (schedulers[i] == false && isHourEven(BlackHorseWindow.hours.get(i))) {
                 setScheduler(i, true);
             }
             setChanged();
@@ -134,7 +132,7 @@ public class VisualScripts extends Observable {
 
     private void checkOdd() {
         for (int i = 0; i < schedulers.length; i++) {
-            if (schedulers[i] == false && isHourOdd(VisualScriptsWindow.hours.get(i))) {
+            if (schedulers[i] == false && isHourOdd(BlackHorseWindow.hours.get(i))) {
                 setScheduler(i, true);
             }
             setChanged();
@@ -151,22 +149,28 @@ public class VisualScripts extends Observable {
     }
 
     private void scheduleNewTasks() {
+        scheduleTasks(orderTasks());
+    }
+
+    private void scheduleTasks(Map<Date, HourTask> orderedTasks) {
         timer = new Timer(ProgramVersion.getProgramName() + "Timer");
-        for (int i = 0; i < schedulers.length; i++) {
-            if (schedulers[i] == true) {
-                HourTask task = new HourTask(VisualScriptsWindow.hours.get(i));
-                Date date = setScheduledTime(task);
-                timer.schedule(task, date);
-                logger.info("Task '" + task.getAlias() + "' is succesfully added to a scheduler.");
-                logger.debug("Task '" + task.getAlias() + "' will start on '" + date.toString() + "'.");
-            }
+        for (Date date : orderedTasks.keySet()) {
+            timer.schedule(orderedTasks.get(date), date);
+            logger.info("Task '" + orderedTasks.get(date).getAlias() + "' is succesfully added to a scheduler.");
+            logger.debug("Task '" + orderedTasks.get(date).getAlias() + "' will start on '" + date.toString() + "'.");
         };
     }
 
-    private boolean isTimerActivated() {
-        if (timer == null)
-            return false;
-        return true;
+    private Map<Date, HourTask> orderTasks() {
+        Map<Date, HourTask> result = new TreeMap<>();
+        for (int i = 0; i < schedulers.length; i++) {
+            if (schedulers[i] == true) {
+                HourTask task = new HourTask(BlackHorseWindow.hours.get(i));
+                Date date = setScheduledTime(task);
+                result.put(date, task);
+            }
+        }
+        return result;
     }
 
     private Date setScheduledTime(HourTask task) {
@@ -177,6 +181,12 @@ public class VisualScripts extends Observable {
         result.setHours(Integer.valueOf(task.getDigits().substring(0, task.getDigits().indexOf(":"))));
         result.setMinutes(Integer.valueOf(task.getDigits().substring(task.getDigits().indexOf(":") + 1)));
         return result;
+    }
+
+    private boolean isTimerActivated() {
+        if (timer == null)
+            return false;
+        return true;
     }
 
     private boolean isHourSelected() {

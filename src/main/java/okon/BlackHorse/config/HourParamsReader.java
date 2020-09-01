@@ -1,7 +1,7 @@
-package okon.VisualScripts.config;
+package okon.BlackHorse.config;
 
-import okon.VisualScripts.AppException;
-import okon.VisualScripts.Script;
+import okon.BlackHorse.AppException;
+import okon.BlackHorse.Hour;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
@@ -13,36 +13,32 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class ScriptParamsReader {
-    private static final Logger logger = LogManager.getLogger(ScriptParamsReader.class);
+public class HourParamsReader {
+    private static final Logger logger = LogManager.getLogger(HourParamsReader.class);
 
-    public static List<Script> readScriptParams(File file) {
+    public static List<Hour> readHourParams(File file) {
         Element root = parseXml(file);
-        List<Script> result = new ArrayList<>();
-        NodeList scripts = root.getElementsByTagName("script");
+        List<Hour> result = new ArrayList<>();
+        NodeList scripts = root.getElementsByTagName("hour");
         if (scripts != null && scripts.getLength() > 0) {
             for (int i = 0; i < scripts.getLength(); i++) {
                 Node script = scripts.item(i);
                 if (script.getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element)script;
-                    String interfaceName = element.getElementsByTagName("interface_name").item(0).getTextContent();
                     String alias = element.getElementsByTagName("alias").item(0).getTextContent();
-                    String filename = element.getElementsByTagName("filename").item(0).getTextContent();
-                    String path = element.getElementsByTagName("path").item(0).getTextContent();
-                    String command = element.getElementsByTagName("command").item(0).getTextContent();
-                    result.add(new Script(interfaceName, alias, filename, path, getAsList(command)));
+                    String digits = element.getElementsByTagName("digits").item(0).getTextContent();
+                    List<String> interfaceNames = new ArrayList<>();
+                    for (int j = 0; j < element.getElementsByTagName("interface_name").getLength(); j++) {
+                        interfaceNames.add(element.getElementsByTagName("interface_name").item(j).getTextContent());
+                    }
+                    result.add(new Hour(alias, digits, interfaceNames));
                 }
             }
         }
-        logger.debug("ReadScriptParams(" + file.getName() + ") : OK");
+        logger.debug("ReadHourParams(" + file.getName() + ") : OK");
         return result;
-    }
-
-    private static List<String> getAsList(String command) {
-        return new ArrayList(Arrays.asList(command.trim().split("\\s+")));
     }
 
     private static Element parseXml(File file) {

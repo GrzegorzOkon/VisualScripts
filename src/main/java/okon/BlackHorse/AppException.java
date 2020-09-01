@@ -1,4 +1,4 @@
-package okon.VisualScripts;
+package okon.BlackHorse;
 
 public class AppException extends RuntimeException {
     public AppException(Throwable cause) {

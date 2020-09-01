@@ -32,7 +32,7 @@ sourceSets {
 jar {
     exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
     manifest {
-        attributes 'Main-Class': 'okon.VisualScripts.VisualScriptsWindow'
+        attributes 'Main-Class': 'okon.BlackHorse.BlackHorseWindow'
     }
     doFirst {
         from { configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) } }

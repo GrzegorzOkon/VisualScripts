@@ -1,4 +1,4 @@
-package okon.VisualScripts;
+package okon.BlackHorse;
 
 import java.util.*;
 import java.util.concurrent.Callable;
@@ -33,9 +33,9 @@ public class HourTask extends TimerTask {
     private void addScriptsToPool() {
         for (int i = 0; i < getInterfaceNames().size(); i++) {
             String interfaceName = getInterfaceNames().get(i);
-            for (int j = 0; j < VisualScriptsWindow.scripts.size(); j++) {
-                if (VisualScriptsWindow.scripts.get(j).getInterfaceName().equals(interfaceName)) {
-                    tasks.add(new ScriptTask(VisualScriptsWindow.scripts.get(j)));
+            for (int j = 0; j < BlackHorseWindow.scripts.size(); j++) {
+                if (BlackHorseWindow.scripts.get(j).getInterfaceName().equals(interfaceName)) {
+                    tasks.add(new ScriptTask(BlackHorseWindow.scripts.get(j)));
                 }
             }
         }
