@@ -2,8 +2,8 @@ package okon.BlackHorse.config;
 
 import okon.BlackHorse.AppException;
 import okon.BlackHorse.Script;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

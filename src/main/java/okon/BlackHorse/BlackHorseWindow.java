@@ -13,9 +13,9 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import okon.BlackHorse.config.HourParamsReader;
 import okon.BlackHorse.config.ScriptParamsReader;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -34,9 +34,7 @@ public class BlackHorseWindow extends Application implements Observer {
     static final List<Hour> hours;
 
     static {
-        LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);
-        File file = new File("config/log4j2.xml");
-        context.setConfigLocation(file.toURI());
+        PropertyConfigurator.configure("./config/log4j.properties");
         version = ProgramVersion.getTitleDescription();
         scripts = ScriptParamsReader.readScriptParams(new File("./config/scripts.xml"));
         hours = HourParamsReader.readHourParams(new File("./config/hours.xml"));
