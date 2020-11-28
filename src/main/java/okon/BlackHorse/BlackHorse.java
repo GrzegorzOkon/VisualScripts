@@ -144,7 +144,7 @@ public class BlackHorse extends Observable {
         if (isTimerActivated() == true) {
             timer.cancel();
             timer.purge();
-            logger.info("Actual scheduled tasks are cancelled.");
+            logger.info("All tasks are cancelled");
         }
     }
 
@@ -156,8 +156,8 @@ public class BlackHorse extends Observable {
         timer = new Timer(ProgramVersion.getProgramName() + "Timer");
         for (Date date : orderedTasks.keySet()) {
             timer.schedule(orderedTasks.get(date), date);
-            logger.info("Task '" + orderedTasks.get(date).getAlias() + "' is succesfully added to a scheduler.");
-            logger.debug("Task '" + orderedTasks.get(date).getAlias() + "' will start on '" + date.toString() + "'.");
+            logger.info("A task '" + orderedTasks.get(date).getAlias() + "' is successfully added to a scheduler");
+            logger.debug("A task '" + orderedTasks.get(date).getAlias() + "' will start on '" + date.toString() + "'");
         };
     }
 
