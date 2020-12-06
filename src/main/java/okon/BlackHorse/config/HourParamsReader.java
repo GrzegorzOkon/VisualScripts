@@ -49,7 +49,7 @@ public class HourParamsReader {
             logger.debug("ParseXml(" + file.getName() + ") : OK");
             return document.getDocumentElement();
         } catch (Exception e) {
-            logger.error("ParseXml(" + file.getName() + ") : " + e.getMessage());
+            logger.fatal("ParseXml(" + file.getName() + ") : " + e.getMessage());
             throw new AppException(e);
         }
     }

@@ -1,5 +1,6 @@
 package okon.BlackHorse;
 
+import okon.BlackHorse.utils.TimeConfigurator;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -8,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.Duration;
 import java.util.List;
 import java.util.StringJoiner;
 import java.util.concurrent.Callable;
@@ -41,10 +43,10 @@ public class ScriptTask implements Callable<Message> {
                 result = sj.toString();
                 process.waitFor(5, TimeUnit.MINUTES);
                 if (!process.isAlive()) {
-                    logger.info(script.getName() + " is finished (exec time: " + executionWatch.getTime(TimeUnit.SECONDS) + " sec.)");
+                    logger.info(script.getName() + " is finished in " + TimeConfigurator.toProperUnitOfMeasure(Duration.ofMillis(executionWatch.getTime(TimeUnit.MILLISECONDS))));
                 } else {
                     process.destroyForcibly();
-                    logger.error(script.getName() + " is destroyed (exec time: " + executionWatch.getTime(TimeUnit.SECONDS) + " sec.)");
+                    logger.error(script.getName() + " is destroyed in " + TimeConfigurator.toProperUnitOfMeasure(Duration.ofMillis(executionWatch.getTime(TimeUnit.MILLISECONDS))));
                 }
             }
         } catch (IOException e) {
